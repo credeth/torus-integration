@@ -19,29 +19,55 @@ const web3Obj = {
       });
   },
   getReputationHistory: async function(address) {
+    let data = [];
+    let promises = [];
     web3Obj.contract.getPastEvents("Vouched", {
         filter: {
           _vouchee: address
         }
       })
     .then(function(events) {
-      let data = [];
-      let promises = [];
       events.forEach(event => {
         let vouched = {};
         vouched["value"] = event.returnValues._vouchedAmount;
+        vouched["from"] = event.returnValues._vouchee;
+        vouched["to"] = event.returnValues._voucher;
+        vouched["time"] = 0;
+        data.push(vouched);
         promises.push(
           new Promise(
             web3Obj.web3.eth.getBlock(event.blockNumber)
-            .then(function(block) {
-              vouched["time"] = block.timestamp;
-              data.push(vouched);
-            })
+          )
+        )
+      });
+    });
+    web3Obj.contract.getPastEvents("Vouched", {
+      filter: {
+        _voucher: address
+      }
+    })
+    .then(function(events) {
+      events.forEach(event => {
+        let vouched = {};
+        vouched["value"] = event.returnValues._vouchedAmount;
+        vouched["from"] = event.returnValues._vouchee;
+        vouched["to"] = event.returnValues._voucher;
+        vouched["time"] = 0;
+        data.push(vouched);
+        promises.push(
+          new Promise(
+            web3Obj.web3.eth.getBlock(event.blockNumber)
           )
         )
       });
       Promise.all(promises)
       .then(() => {
+        for(let i = 0; i < promises.length; i++) {
+          data[i]["time"] = promises[i].timestamp;
+        }
+        data.sort(function(a, b) {
+          return ((a.time > b.time) ? -1 : 1);
+        });
         return data;
       })
     });
