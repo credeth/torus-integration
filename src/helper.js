@@ -45,6 +45,19 @@ const web3Obj = {
         return data;
       })
     });
+  },
+  getLeaderboard: function() {
+    web3Obj.contract.methods.getAllReputations().call()
+    .then(function(data) {
+      let list = [];
+      for (let j = 0; j < data[0].length; j++)
+        list.push({'address': data[0][j], 'reputation': data[1][j]});
+
+      list.sort(function(a, b) {
+        return ((a.reputation < b.reputation) ? -1 : 1);
+      });
+      return list;
+    });
   }
 }
 
