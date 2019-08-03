@@ -7,9 +7,44 @@ const web3Obj = {
     const web3Inst = new Web3(window.web3.currentProvider || 'ws://localhost:8546', null, {})
     web3Obj.web3 = web3Inst
     web3Obj.contract = new web3Obj.web3.eth.Contract(contractABI, contractAddress, {
-        gasPrice: '5000000000' // default gas price in wei, 5 gwei in this case
+      gasPrice: '5000000000' // default gas price in wei, 5 gwei in this case
     })
     sessionStorage.setItem('pageUsingTorus', 'true')
+  },
+  vouch: function(address) {
+    web3Obj.contract.methods.vouch(address).send()
+      .then(function(receipt) {
+        console.log(receipt);
+        return receipt;
+      });
+  },
+  getReputationHistory: async function(address) {
+    web3Obj.contract.getPastEvents("Vouched", {
+        filter: {
+          _vouchee: address
+        }
+      })
+    .then(function(events) {
+      let data = [];
+      let promises = [];
+      events.forEach(event => {
+        let vouched = {};
+        vouched["value"] = event.returnValues._vouchedAmount;
+        promises.push(
+          new Promise(
+            web3Obj.web3.eth.getBlock(event.blockNumber)
+            .then(function(block) {
+              vouched["time"] = block.timestamp;
+              data.push(vouched);
+            })
+          )
+        )
+      });
+      Promise.all(promises)
+      .then(() => {
+        return data;
+      })
+    });
   }
 }
 
