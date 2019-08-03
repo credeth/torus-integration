@@ -29,6 +29,11 @@ const web3Obj = {
       }
     );
   },
+  getReputation: function(address) {
+    web3Obj.contract.methods.getReputation(address).call().then(reputation => {
+      return reputation;
+    })
+  },
   getReputationHistory: async function(address) {
     let data = [];
     let promises = [];
