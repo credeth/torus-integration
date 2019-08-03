@@ -1,6 +1,6 @@
 import Web3 from 'web3'
-const contractAddress = '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe';
-const contractABI = [];
+const contractAddress = '0x91609aD30EBa869C1F412E5656DeaD7bCaACaA5f';
+const contractABI = [{"constant":true,"inputs":[{"name":"x","type":"uint256"}],"name":"log_2","outputs":[{"name":"y","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"daoAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DAO_CAP","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"INITIAL_REP","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"signal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_vouchee","type":"address"}],"name":"vouche","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllMembers","outputs":[{"name":"","type":"address[]"},{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_reputation","type":"uint256"}],"name":"issueReputation","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_of","type":"address"}],"name":"getReputation","outputs":[{"name":"reputation","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_rep","type":"uint256"}],"name":"daoDistribution","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"distributedByLockdrop","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"distributedByDao","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"LOCKDROP_CAP","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"PER_DAY_VOUCHE_COUNT","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_daoAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_vouchee","type":"address"},{"indexed":true,"name":"_voucher","type":"address"},{"indexed":false,"name":"_vouchedAmount","type":"uint256"}],"name":"Vouched","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_reputation","type":"uint256"}],"name":"DaoDistribution","type":"event"},{"anonymous":false,"inputs":[],"name":"Signaled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_reputation","type":"uint256"}],"name":"IssueReputation","type":"event"}];
 const web3Obj = {
   web3: new Web3(),
   setweb3: function() {
@@ -12,7 +12,7 @@ const web3Obj = {
     sessionStorage.setItem('pageUsingTorus', 'true')
   },
   vouch: function(address) {
-    web3Obj.contract.methods.vouch(address).send()
+    web3Obj.contract.methods.vouche(address).send()
       .then(function(receipt) {
         console.log(receipt);
         return receipt;
@@ -47,7 +47,7 @@ const web3Obj = {
     });
   },
   getLeaderboard: function() {
-    web3Obj.contract.methods.getAllReputations().call()
+    web3Obj.contract.methods.getAllMembers().call()
     .then(function(data) {
       let list = [];
       for (let j = 0; j < data[0].length; j++)
